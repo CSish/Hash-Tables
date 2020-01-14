@@ -1,3 +1,5 @@
+import hashlib
+
 # '''
 # Linked List hash table key/value pair
 # '''
@@ -12,7 +14,7 @@ class HashTable:
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
-    def __init__(self, capacity):
+    def __init__(self, capacity=0):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
 
@@ -23,6 +25,12 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
+        self.capacity += 1
+        key = key.encode('utf-8')
+
+        def hash(key):
+            return int(hashlib.sha256(key).hexdigest(), 16)
+            
         return hash(key)
 
 
@@ -40,6 +48,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
+
         return self._hash(key) % self.capacity
 
 
@@ -51,8 +60,22 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        #create new LinkNode with key value 
+        # add to next available index in storage
+        #if key already exists crate linked pair
+        #new_node's next is the last item 
+        
+        key = self._hash(key)
+        new_node = LinkedPair(key, value)
+        for i in range(self.capacity -1):
+            current = self.storage[i]
+            if current is None:
+                current = new_node
+            if current.next is None:
+                current.next is new_node
+                current = current.next
 
+        
 
 
     def remove(self, key):
@@ -74,7 +97,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        key = self._hash(key)
+        current = self.storage[0]
+
+        while current.next is not None: 
+            if current.key is key: 
+                return key.value
+            else:
+                current = current.next
 
 
     def resize(self):
@@ -115,3 +145,9 @@ if __name__ == "__main__":
     print(ht.retrieve("line_3"))
 
     print("")
+
+    print( ht._hash('howdy'))
+    print( ht._hash_mod('how'))
+    print( ht._hash_mod('howd'))
+    print( ht._hash_mod('howdy'))
+    print( ht._hash_mod('hows'))
